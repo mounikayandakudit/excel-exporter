@@ -1,0 +1,156 @@
+<p-table [columns]="cols" [value]="lookups" selectionMode="single" [(selection)]="selectedLookup" (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15">
+    <ng-template pTemplate="caption">
+        List of lookups
+    </ng-template>
+    <ng-template pTemplate="header" let-columns>
+        <tr>
+            <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                {{col.header}}
+                <p-sortIcon [field]="col.field"></p-sortIcon>
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+        <tr [pSelectableRow]="rowData">
+            <td *ngFor="let col of columns">
+                {{rowData[col.field]}}
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="summary" let-rowData>
+        <div style="text-align:left">
+            <button type="button" pButton icon="pi pi-plus" (click)="showDialogToAdd()" label="Add"></button>
+        </div>
+    </ng-template>    
+</p-table>
+
+<p-dialog header="Lookup Details" [(visible)]="displayDialog" [focusOnShow]="false" [responsive]="true" showEffect="fade" [modal]="true"  [style]="{width: '300px'}">
+    <div class="ui-g ui-fluid" *ngIf="lookup">
+        <div class="ui-g-12">
+            <div class="ui-g-4">
+                <label for=" LOOKUP_ID"> LOOKUP_ID</label>
+            </div>
+            <div class="ui-g-8">
+                <input pInputText id="LOOKUP_ID" [(ngModel)]="lookup.LOOKUP_ID" autofocus />
+            </div>
+        </div>
+        <div class="ui-g-12">
+            <div class="ui-g-4">
+                <label for="LOOKUP_CATEGORY">LOOKUP_CATEGORY</label>
+            </div>
+            <div class="ui-g-8">
+                <input pInputText id="LOOKUP_CATEGORY" [(ngModel)]="lookup.LOOKUP_CATEGORY" />
+            </div>
+        </div>
+        <div class="ui-g-12">
+            <div class="ui-g-4">
+                <label for="LOOKUP_SUBCATEGORY1">LOOKUP_SUBCATEGORY1</label>
+            </div>
+            <div class="ui-g-8">
+                <input pInputText id="LOOKUP_SUBCATEGORY1" [(ngModel)]="lookup.LOOKUP_SUBCATEGORY1" />
+            </div>
+        </div>
+        <div class="ui-g-12">
+            <div class="ui-g-4">
+                <label for=" LOOKUP_SUBCATEGORY2"> LOOKUP_SUBCATEGORY2</label>
+            </div>
+            <div class="ui-g-8">
+                <input pInputText id=" LOOKUP_SUBCATEGORY2" [(ngModel)]="lookup.LOOKUP_SUBCATEGORY2" />
+            </div>
+        </div>
+        <div class="ui-g-12">
+            <div class="ui-g-4">
+                <label for="  FROM_VALUE1">  FROM_VALUE1</label>
+            </div>
+            <div class="ui-g-8">
+                <input pInputText id="  FROM_VALUE1" [(ngModel)]="lookup.FROM_VALUE1" />
+            </div>
+        </div>
+        <div class="ui-g-12">
+            <div class="ui-g-4">
+                <label for="  FROM_VALUE2">  FROM_VALUE2</label>
+            </div>
+            <div class="ui-g-8">
+                <input pInputText id="  FROM_VALUE2" [(ngModel)]="lookup.FROM_VALUE2" />
+            </div>
+        </div>
+        <div class="ui-g-12">
+            <div class="ui-g-4">
+                <label for="  FROM_VALUE3">  FROM_VALUE3</label>
+            </div>
+            <div class="ui-g-8">
+                <input pInputText id="  FROM_VALUE3" [(ngModel)]="lookup.FROM_VALUE3" />
+            </div>
+        </div>
+        <div class="ui-g-12">
+            <div class="ui-g-4">
+                <label for="  FROM_VALUE4">  FROM_VALUE4</label>
+            </div>
+            <div class="ui-g-8">
+                <input pInputText id="  FROM_VALUE4" [(ngModel)]="lookup.FROM_VALUE4" />
+            </div>
+        </div>
+        <div class="ui-g-12">
+            <div class="ui-g-4">
+                <label for="  FROM_VALUE5">  FROM_VALUE5</label>
+            </div>
+            <div class="ui-g-8">
+                <input pInputText id="  FROM_VALUE5" [(ngModel)]="lookup.FROM_VALUE5" />
+            </div>
+        </div>
+        <div class="ui-g-12">
+            <div class="ui-g-4">
+                <label for=" TO_VALUE1">  TO_VALUE1</label>
+            </div>
+            <div class="ui-g-8">
+                <input pInputText id=" TO_VALUE1" [(ngModel)]="lookup.TO_VALUE1" />
+            </div>
+        </div>
+        <div class="ui-g-12">
+            <div class="ui-g-4">
+                <label for=" TO_VALUE2">  TO_VALUE2</label>
+            </div>
+            <div class="ui-g-8">
+                <input pInputText id=" TO_VALUE2" [(ngModel)]="lookup.TO_VALUE2" />
+            </div>
+        </div>
+        <div class="ui-g-12">
+            <div class="ui-g-4">
+                <label for=" TO_VALUE3">  TO_VALUE3</label>
+            </div>
+            <div class="ui-g-8">
+                <input pInputText id=" TO_VALUE3" [(ngModel)]="lookup.TO_VALUE3" />
+            </div>
+        </div>
+        <div class="ui-g-12">
+            <div class="ui-g-4">
+                <label for=" TO_VALUE4">  TO_VALUE4</label>
+            </div>
+            <div class="ui-g-8">
+                <input pInputText id=" TO_VALUE4" [(ngModel)]="lookup.TO_VALUE4" />
+            </div>
+        </div>
+        <div class="ui-g-12">
+            <div class="ui-g-4">
+                <label for=" TO_VALUE5">  TO_VALUE5</label>
+            </div>
+            <div class="ui-g-8">
+                <input pInputText id=" TO_VALUE5" [(ngModel)]="lookup.TO_VALUE5" />
+            </div>
+        </div>
+        <div class="ui-g-12">
+            <div class="ui-g-4">
+                <label for=" COMMENTS">  COMMENTS</label>
+            </div>
+            <div class="ui-g-8">
+                <input pInputText id="COMMENTS" [(ngModel)]="lookup.COMMENTS" />
+            </div>
+        </div>
+    </div>
+    <p-footer>
+        <div class="ui-dialog-buttonpane ui-helper-clearfix">
+            <button type="button" pButton icon="pi pi-times" (click)="delete()" label="Delete"></button>
+            <button type="button" pButton icon="pi pi-check" (click)="save()" label="Save"></button>
+        </div>
+    </p-footer>
+</p-dialog>
