@@ -1,3 +1,10 @@
+
+<div>
+<h4 text-align:center> Welcome to NBCU LookUp Data</h4>
+<input type="file" (change)="onFileChange($event)" multiple="false" />
+</div>	
+
+<div>
 <p-table [columns]="cols" [value]="lookups" selectionMode="single" [(selection)]="selectedLookup" (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15">
     <ng-template pTemplate="caption">
         List of lookups
@@ -23,7 +30,7 @@
         </div>
     </ng-template>    
 </p-table>
-
+</div>
 <p-dialog header="Lookup Details" [(visible)]="displayDialog" [focusOnShow]="false" [responsive]="true" showEffect="fade" [modal]="true"  [style]="{width: '300px'}">
     <div class="ui-g ui-fluid" *ngIf="lookup">
         <div class="ui-g-12">

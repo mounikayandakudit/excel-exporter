@@ -1,11 +1,17 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import {AccordionModule} from 'primeng/accordion';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SheetComponent } from './sheet/sheet.component';
-import {TableModule, DialogModule } from 'primeng/primeng';
+import {TableModule} from 'primeng/table';
+import {DialogModule } from 'primeng/dialog';
+import {ChartModule} from 'primeng/chart';
+import {ButtonModule} from 'primeng/button';
 
 @NgModule({
   declarations: [
@@ -17,7 +23,7 @@ import {TableModule, DialogModule } from 'primeng/primeng';
     AppRoutingModule,
     TableModule,
     DialogModule,
-    FormsModule
+    FormsModule,AccordionModule,BrowserAnimationsModule,ChartModule,ButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]
