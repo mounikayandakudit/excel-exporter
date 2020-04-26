@@ -30,13 +30,11 @@ export class SheetComponent implements OnInit {
   cols: any[];
 
 
-  constructor() { 
-    
+  constructor(private excelService: ExcelService) {
+
   }
 
   ngOnInit() {
-    //this. excelservice.exportAsExcelFile().then(lookups=> this.lookups = this.lookups)
-
     this.cols = [
       { field: 'LOOKUP_ID', header: 'LOOKUP_ID' },
       { field: 'LOOKUP_CATEGORY', header: 'LOOKUP_CATEGORY' },
@@ -55,41 +53,69 @@ export class SheetComponent implements OnInit {
       { field: 'COMMENTS', header: 'COMMENTS' }
     ];
 
-    this.lookups = [
-      {'LOOKUP_ID': 1,'LOOKUP_CATEGORY':'aa','LOOKUP_SUBCATEGORY1':'ww','LOOKUP_SUBCATEGORY2':'ww','FROM_VALUE1':'ff','FROM_VALUE2':'ff','FROM_VALUE3':'ff','FROM_VALUE4':'ff',
-      'FROM_VALUE5':'ff','TO_VALUE1':'aa','TO_VALUE2':'aa','TO_VALUE3':'aa','TO_VALUE4':'aa','TO_VALUE5':'aa','COMMENTS':'aa'},
-      {'LOOKUP_ID': 2,'LOOKUP_CATEGORY':'aa','LOOKUP_SUBCATEGORY1':'ww','LOOKUP_SUBCATEGORY2':'ww','FROM_VALUE1':'ff','FROM_VALUE2':'ff','FROM_VALUE3':'ff','FROM_VALUE4':'ff',
-      'FROM_VALUE5':'ff','TO_VALUE1':'aa','TO_VALUE2':'aa','TO_VALUE3':'aa','TO_VALUE4':'aa','TO_VALUE5':'aa','COMMENTS':'aa'}
-    ];
+    this.excelService.readStaticXlsx().subscribe(data => {
+      data.arrayBuffer().then(value => {
+        const array = new Uint8Array(value);
+        const arr = new Array();
+        for (let i = 0; i !== array.length; ++i) {
+          arr[i] = String.fromCharCode(data[i]);
+        }
+        const bstr = arr.join('');
+        console.log('bstr', arr);
+        const wb: XLSX.WorkBook = XLSX.read(bstr, {type: 'binary'});
+        /* grab first sheet */
+        const wsname: string = wb.SheetNames[0];
+        const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+        this.lookups = [];
+        /* save data */
+        const excelData = (XLSX.utils.sheet_to_json(ws, { header: 1 }));
+        for (const row of excelData) {
+          const lookUp = new Lookup();
+          lookUp.LOOKUP_ID = row[0];
+          lookUp.LOOKUP_CATEGORY = row[1];
+          lookUp.LOOKUP_SUBCATEGORY1 = row[2];
+          lookUp.LOOKUP_SUBCATEGORY2 = row[3];
+          lookUp.FROM_VALUE1 = row[4];
+          lookUp.FROM_VALUE2 = row[5];
+          lookUp.FROM_VALUE3 = row[6];
+          lookUp.FROM_VALUE4 = row[7];
+          lookUp.FROM_VALUE5 = row[8];
+          lookUp.TO_VALUE1 = row[9];
+          lookUp.TO_VALUE2 = row[10];
+          lookUp.TO_VALUE3 = row[11];
+          lookUp.TO_VALUE4 = row[12];
+          lookUp.TO_VALUE5 = row[13];
+          this.lookups.push(lookUp);
+        }
+      });
+   });
 
   }
   showDialogToAdd() {
     this.newLookup = true;
     this.lookup = new Lookup();
     this.displayDialog = true;
-    //this. excelservice.exportAsExcelFile().then(lookups=> this.lookups = this.lookups)
-
   }
 
   save() {
-    let lookups = [...this.lookups];
-    if (this.newLookup)
+    const lookups = [...this.lookups];
+    if (this.newLookup) {
       lookups.push(this.lookup);
-    else
+     } else {
       lookups[this.lookups.indexOf(this.selectedLookup)] = this.lookup;
-
-    this.lookups = this.lookups;
+    }
+    this.lookups = lookups;
     this.lookup = null;
     this.displayDialog = false;
-    //this. excelservice.exportAsExcelFile(this.data,"sheet");
+    this.exportAsExcelFile(this.lookups,"TIBLOOKUPDATA.xlsx");
   }
 
   delete() {
-    let index = this.lookups.indexOf(this.selectedLookup);
+    const index = this.lookups.indexOf(this.selectedLookup);
     this.lookups = this.lookups.filter((val, i) => i != index);
     this.lookup = null;
     this.displayDialog = false;
-    //this. excelservice.exportAsExcelFile(this.data(),"sheet");
+    this.exportAsExcelFile(this.lookups,"TIBLOOKUPDATA.xlsx");
 
   }
   data(data: any) {
@@ -111,13 +137,13 @@ export class SheetComponent implements OnInit {
   }
   public exportAsExcelFile(json: any[], excelFileName: string): void {
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(json);
-    const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
+    const workbook: XLSX.WorkBook = { Sheets: { 'data' : worksheet }, SheetNames: ['data'] };
     const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
     this.saveAsExcelFile(excelBuffer, excelFileName);
   }
   private saveAsExcelFile(buffer: any, fileName: string): void {
-     const data: Blob = new Blob([buffer], {type: EXCEL_TYPE});
-     FileSaver.saveAs(data, fileName + '_export_' + new  Date().getTime() + EXCEL_EXTENSION);
+    const data: Blob = new Blob([buffer], { type: EXCEL_TYPE });
+    FileSaver.saveAs(data, fileName);
   }
   onFileChange(evt: any) {
     /* wire up file reader */
@@ -127,7 +153,7 @@ export class SheetComponent implements OnInit {
     reader.onload = (e: any) => {
       /* read workbook */this.newLookup
       const bstr: string = e.target.result;
-      const wb: XLSX.WorkBook = XLSX.read(bstr, {type: 'binary'});
+      const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
 
       /* grab first sheet */
       const wsname: string = wb.SheetNames[0];
@@ -135,13 +161,24 @@ export class SheetComponent implements OnInit {
 
       this.lookups = [];
       /* save data */
-      let data = (XLSX.utils.sheet_to_json(ws, {header: 1}));
-      for(let row of data){
-          console.log(row);
-          let lookUp = new Lookup();
-          lookUp.LOOKUP_ID = row[0];
-          lookUp.LOOKUP_CATEGORY = row[1];
-          this.lookups.push(lookUp);
+      let data = (XLSX.utils.sheet_to_json(ws, { header: 1 }));
+      for (let row of data) {
+        const lookUp = new Lookup();
+        lookUp.LOOKUP_ID = row[0];
+        lookUp.LOOKUP_CATEGORY = row[1];
+        lookUp.LOOKUP_SUBCATEGORY1 = row[2];
+        lookUp.LOOKUP_SUBCATEGORY2 = row[3];
+        lookUp.FROM_VALUE1 = row[4];
+        lookUp.FROM_VALUE2 = row[5];
+        lookUp.FROM_VALUE3 = row[6];
+        lookUp.FROM_VALUE4 = row[7];
+        lookUp.FROM_VALUE5 = row[8];
+        lookUp.TO_VALUE1 = row[9];
+        lookUp.TO_VALUE2 = row[10];
+        lookUp.TO_VALUE3 = row[11];
+        lookUp.TO_VALUE4 = row[12];
+        lookUp.TO_VALUE5 = row[13];
+        this.lookups.push(lookUp);
       }
     };
     reader.readAsBinaryString(target.files[0]);

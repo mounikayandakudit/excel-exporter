@@ -1,6 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+
 import {AccordionModule} from 'primeng/accordion';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
@@ -21,9 +23,14 @@ import {ButtonModule} from 'primeng/button';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule,
     TableModule,
     DialogModule,
-    FormsModule,AccordionModule,BrowserAnimationsModule,ChartModule,ButtonModule
+    FormsModule,
+    AccordionModule,
+    BrowserAnimationsModule,
+    ChartModule,
+    ButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]
